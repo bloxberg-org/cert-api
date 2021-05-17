@@ -4,6 +4,7 @@ from fastapi import Depends, FastAPI, Request, HTTPException, status, Background
 from fastapi.responses import FileResponse, Response, JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
+from fastapi_simple_security import api_key_security
 from cert_tools import instantiate_v3_alpha_certificate_batch, create_v3_alpha_certificate_template
 from pydantic import BaseModel, Field, Json
 from urllib.error import HTTPError
@@ -109,7 +110,6 @@ class Batch(BaseModel):
 
 
 async def issueRequest(url, headers, payload):
-
     #Asynchronous
     async with httpx.AsyncClient() as session:  # use httpx
         response = await session.request(method='POST', url=url, headers=headers, data=payload, timeout=None)
@@ -121,13 +121,12 @@ async def issueRequest(url, headers, payload):
     # encodedResponse = response.text.encode('utf8')
     # jsonText = json.loads(encodedResponse)
 
-
     return jsonText
 
 
 
 ##Full Workflow
-@router.post("/createBloxbergCertificate", tags=['certificate'], response_model=List[jsonCertificate])
+@router.post("/createBloxbergCertificate", dependencies=[Depends(api_key_security)], tags=['certificate'], response_model=List[jsonCertificate])
 async def createBloxbergCertificate(batch: Batch):
 
     """

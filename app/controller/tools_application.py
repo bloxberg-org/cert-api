@@ -5,7 +5,6 @@ from controller.errors.validation_error import validation_exception_handler
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
-
 from controller.cert_tools.router import router as api_router
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")

@@ -7,11 +7,10 @@ import json
 import uuid
 import io
 import os
-
+from fastapi_simple_security import api_key_security
 from pydantic import BaseModel, Field, Json
-
 from fastapi.responses import FileResponse
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import Depends, APIRouter, BackgroundTasks, HTTPException
 
 router = APIRouter()
 
@@ -88,7 +87,7 @@ def zipfilesindir(dirName, zipFileName, filter=None):
         return
 
 
-@router.post("/generatePDF", tags=['pdf'])
+@router.post("/generatePDF", tags=['pdf'], dependencies=[Depends(api_key_security)])
 async def generatePDF(request: List[jsonCertificate], background_tasks: BackgroundTasks):
     """
     Accepts as input the response from the createBloxbergCertificate endpoint, for example a research object JSON array. Returns as response a zip archive with PDF files that correspond to the number of cryptographic identifiers provided. PDF files are embedded with the Research Object Certification which is used for verification.

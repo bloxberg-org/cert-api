@@ -1,7 +1,7 @@
 version: '2.2'
 services:
   cert_tools_api:
-    image: tiangolo/uvicorn-gunicorn-fastapi:python3.7
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.8
     working_dir: /app/cert_tools
     command: bash -c "pip install -r requirements.txt && /start-reload.sh"
     container_name: cert_tools_api
@@ -9,23 +9,21 @@ services:
     memswap_limit: 512000000
     mem_swappiness: 0
     user: "0:0"
-    environment:
-      - WORKERS_PER_CORE=2
-      - WEB_CONCURRENCY=3
-      - MAX_WORKERS=12
-      - app=development
-      - CERT_ISSUER_CONTAINER="cert_issuer_api:7001"
+    env_file:
+      - cert_tools.env
     volumes:
       - ./app/controller/tools_application.py:/app/main.py
       - ./app/controller:/app/controller
       - ../cert-tools:/app/cert_tools
+      #SQLite DB Storage
+      - ./app/db/sqlite.db:/app/sqlite.db
       #- ../cert-issuer/data/pdf_certificates:/app/cert_tools/sample_data/pdf_certificates
     #restart: unless-stopped
     ports:
       - 7000:80
 
   cert_issuer_api:
-    image: tiangolo/uvicorn-gunicorn-fastapi:python3.7
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.8
     volumes:
       - ./app/controller/issuer_application.py:/app/main.py
       - ./app/controller:/app/controller
@@ -38,14 +36,13 @@ services:
     memswap_limit: 512000000
     mem_swappiness: 0
     user: "0:0"
-    environment:
-      - WORKERS_PER_CORE=2
-      - WEB_CONCURRENCY=3
-      - MAX_WORKERS=12
-      - app=development
+    env_file:
+      - cert_issuer.env
     #restart: unless-stopped
     ports:
       - 7001:80
+
+
 
 # TODO: Wait for improved IPNS performance before integrating in production.
   #ipfs:
@@ -56,8 +53,8 @@ services:
   #  volumes:
   #    - ../ipfsdata:/ipfsdata
   #  ports:
-      - "4001:4001"
-      - "8080:8080"
-      - "8081:8081"
-      - "5001:5001"
+   #   - "4001:4001"
+   #   - "8080:8080"
+   #   - "8081:8081"
+   #   - "5001:5001"
 
