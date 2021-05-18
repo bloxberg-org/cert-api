@@ -90,7 +90,7 @@ def zipfilesindir(dirName, zipFileName, filter=None):
 @router.post("/generatePDF", tags=['pdf'], dependencies=[Depends(api_key_security)])
 async def generatePDF(request: List[jsonCertificate], background_tasks: BackgroundTasks):
     """
-    Accepts as input the response from the createBloxbergCertificate endpoint, for example a research object JSON array. Returns as response a zip archive with PDF files that correspond to the number of cryptographic identifiers provided. PDF files are embedded with the Research Object Certification which is used for verification.
+    Accepts as input the response from the createBloxbergCertificate endpoint, for example a research object JSON array. Returns as response a zip archive with PDF files that correspond to the number of cryptographic identifiers provided. PDF files are embedded with the Research Object Certification which is used for verification. API Key must be sent as a header or query, please contact bloxberg_services@mpdl.mpg.de in order to obtain an API key for production use.
     """
     try:
         # For JSON Certificate Batch Request

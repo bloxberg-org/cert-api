@@ -130,7 +130,7 @@ async def issueRequest(url, headers, payload):
 async def createBloxbergCertificate(batch: Batch):
 
     """
-    Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array.
+    Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array. API Key must be sent as a header or query, please contact bloxberg_services@mpdl.mpg.de in order to obtain an API key for production use.
     """
 
     # Currently don't support IPFS due to performance and space issues.
@@ -138,7 +138,6 @@ async def createBloxbergCertificate(batch: Batch):
         raise HTTPException(status_code=400,
                             detail="IPFS is not supported currently due to performance and storage requirements.")
     # limit number of CRIDs to 1000
-    print(len(batch.crid))
     if len(batch.crid) >= 1001:
         raise HTTPException(status_code=400,
                             detail="You are trying to certify too many files at once, please limit to 1000 files per batch.")
