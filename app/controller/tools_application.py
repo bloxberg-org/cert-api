@@ -27,7 +27,7 @@ tags_metadata = [
 
 ]
 
-app = FastAPI(title="Research Object Certification", openapi_tags=tags_metadata)
+app = FastAPI(title="Research Object Certification", openapi_tags=tags_metadata, version="0.4.0")
 
 origins = [
     "http://localhost:3001"

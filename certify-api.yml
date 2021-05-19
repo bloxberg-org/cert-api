@@ -16,7 +16,7 @@ services:
       - ./app/controller:/app/controller
       - ../cert-tools:/app/cert_tools
       #SQLite DB Storage
-      - ./app/db/sqlite.db:/app/sqlite.db
+      - ./app/db:/app/db
       #- ../cert-issuer/data/pdf_certificates:/app/cert_tools/sample_data/pdf_certificates
     #restart: unless-stopped
     ports:
