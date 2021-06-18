@@ -124,13 +124,24 @@ async def issueRequest(url, headers, payload):
     return jsonText
 
 
+def removeTempFiles(absolute_directory, full_path_with_file, uidArray):
+    try:
+        for x in uidArray:
+            full_path_with_file = str(absolute_directory + '/' + 'unsigned_certificates/' + x + '.json')
+            os.remove(full_path_with_file)
+    except:
+        print("Error while deleting file ", full_path_with_file)
+
+
 
 ##Full Workflow
 @router.post("/createBloxbergCertificate", dependencies=[Depends(api_key_security)], tags=['certificate'], response_model=List[jsonCertificate])
-async def createBloxbergCertificate(batch: Batch):
+async def createBloxbergCertificate(batch: Batch, background_tasks: BackgroundTasks):
 
     """
-    Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array. API Key must be sent as a header or query, please contact bloxberg_services@mpdl.mpg.de in order to obtain an API key for production use.
+    Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array.
+
+    API Key must be sent as a header or query, please contact bloxberg_services@mpdl.mpg.de in order to obtain an API key for production use.
     """
 
     # Currently don't support IPFS due to performance and space issues.
@@ -178,9 +189,8 @@ async def createBloxbergCertificate(batch: Batch):
     # TODO: Currently a simple post request, but need to research message queues for microservices
     try:
         jsonText = await issueRequest(url, headers, payload)
-        for x in uidArray:
-            full_path_with_file = str(conf.abs_data_dir + '/' + 'unsigned_certificates/' + x + '.json')
-            os.remove(full_path_with_file)
+    # TODO: Move certificate removal to a background process or async function outside of try block
+
     except Exception as e:
         print('Bad post request')
         print(e)
@@ -193,6 +203,7 @@ async def createBloxbergCertificate(batch: Batch):
         except Exception as e:
             print(e)
         raise HTTPException(status_code=404, detail="Certifying batch to the blockchain failed.")
+    background_tasks.add_task(removeTempFiles, conf.abs_data_dir, full_path_with_file, uidArray)
     end2 = time.time()
     logger.info(end2 - start2)
     return jsonText
