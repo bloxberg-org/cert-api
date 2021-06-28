@@ -20,10 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c8e2626-c46d-4be6-bb0f-adf2208707f1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/cert_issuer/sign_certificate.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/cert_issuer/sign_certificate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/cert_tools/generate_unsigned_certificate.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/cert_tools/generate_unsigned_certificate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controller/errors/validation_error.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/controller/errors/validation_error.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/db/sqlite.db" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/sqlite.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +62,7 @@
       <workItem from="1620646258172" duration="37413000" />
       <workItem from="1621494497955" duration="3671000" />
       <workItem from="1623938881905" duration="2907000" />
-      <workItem from="1624865623360" duration="11990000" />
+      <workItem from="1624865623360" duration="13509000" />
     </task>
     <servers />
   </component>
