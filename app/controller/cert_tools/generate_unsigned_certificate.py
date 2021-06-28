@@ -124,7 +124,7 @@ async def issueRequest(url, headers, payload):
     return jsonText
 
 
-def removeTempFiles(absolute_directory, full_path_with_file, uidArray):
+async def removeTempFiles(absolute_directory, uidArray):
     try:
         for x in uidArray:
             full_path_with_file = str(absolute_directory + '/' + 'unsigned_certificates/' + x + '.json')
@@ -132,11 +132,14 @@ def removeTempFiles(absolute_directory, full_path_with_file, uidArray):
     except:
         print("Error while deleting file ", full_path_with_file)
 
+    return
+
+
 
 
 ##Full Workflow
-@router.post("/createBloxbergCertificate", dependencies=[Depends(api_key_security)], tags=['certificate'], response_model=List[jsonCertificate])
-async def createBloxbergCertificate(batch: Batch, background_tasks: BackgroundTasks):
+@router.post("/createBloxbergCertificate", dependencies=[Depends(api_key_security)], tags=['certificate'])
+async def createBloxbergCertificate(batch: Batch):
 
     """
     Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array.
@@ -156,19 +159,19 @@ async def createBloxbergCertificate(batch: Batch, background_tasks: BackgroundTa
     conf = create_v3_alpha_certificate_template.get_config()
 
     python_environment = os.getenv("app")
-    if python_environment == "production":
-        full_path_with_file = str(conf.abs_data_dir + '/' + 'unsigned_certificates/')
-        for file_name in os.listdir(full_path_with_file):
-            if file_name.endswith('.json'):
-                logger.info(full_path_with_file + file_name)
-                os.remove(full_path_with_file + file_name)
+    # if python_environment == "production":
+    #     full_path_with_file = str(conf.abs_data_dir + '/' + 'unsigned_certificates/')
+    #     for file_name in os.listdir(full_path_with_file):
+    #         if file_name.endswith('.json'):
+    #             logger.info(full_path_with_file + file_name)
+    #             os.remove(full_path_with_file + file_name)
 
     logger.info('Generating unsigned certs')
     create_v3_alpha_certificate_template.write_certificate_template(conf, batch.publicKey)
     conf_instantiate = instantiate_v3_alpha_certificate_batch.get_config()
     if batch.metadataJson is not None:
         uidArray = instantiate_v3_alpha_certificate_batch.instantiate_batch(conf_instantiate, batch.publicKey,
-                                                                            batch.crid, batch.cridType, batch.metadataJson)
+                                                                           batch.crid, batch.cridType, batch.metadataJson)
     else:
         uidArray = instantiate_v3_alpha_certificate_batch.instantiate_batch(conf_instantiate, batch.publicKey,
                                                                             batch.crid, batch.cridType)
@@ -203,7 +206,7 @@ async def createBloxbergCertificate(batch: Batch, background_tasks: BackgroundTa
         except Exception as e:
             print(e)
         raise HTTPException(status_code=404, detail="Certifying batch to the blockchain failed.")
-    background_tasks.add_task(removeTempFiles, conf.abs_data_dir, full_path_with_file, uidArray)
+    await removeTempFiles(conf.abs_data_dir, uidArray)
     end2 = time.time()
     logger.info(end2 - start2)
     return jsonText
