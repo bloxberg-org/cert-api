@@ -144,7 +144,7 @@ async def createBloxbergCertificate(batch: Batch):
     """
     Creates, transacts, and signs a research object certificate on the bloxberg blockchain. Hashes must be generated client side for each desired file and provided in an array. Each hash corresponds to one research object certificate returned in a JSON object array.
 
-    API Key must be sent as a header or query, please contact bloxberg_services@mpdl.mpg.de in order to obtain an API key for production use.
+    API Key must be sent as a header or query, please contact bloxberg-services@mpdl.mpg.de in order to obtain an API key for production use.
     """
 
     # Currently don't support IPFS due to performance and space issues.
